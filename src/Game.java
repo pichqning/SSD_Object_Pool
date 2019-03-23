@@ -10,9 +10,11 @@ public class Game extends Observable {
     private List<Bullet> bullets;
     private Thread mainLoop;
     private boolean alive;
+    private BulletPool pool;
 
     public Game() {
         alive = true;
+        pool = BulletPool.getInstance();
         bullets = new ArrayList<Bullet>();
         mainLoop = new Thread() {
             @Override
@@ -54,7 +56,9 @@ public class Game extends Observable {
             }
         }
         for(Bullet bullet : toRemove) {
+            pool.releaseBullet(bullet);
             bullets.remove(bullet);
+
         }
     }
 
@@ -71,13 +75,15 @@ public class Game extends Observable {
     }
 
     public void burstBullets(int x, int y) {
-        bullets.add(new Bullet(x, y, 1, 0));
-        bullets.add(new Bullet(x, y, 0, 1));
-        bullets.add(new Bullet(x, y, -1, 0));
-        bullets.add(new Bullet(x, y, 0, -1));
-        bullets.add(new Bullet(x, y, 1, 1));
-        bullets.add(new Bullet(x, y, 1, -1));
-        bullets.add(new Bullet(x, y, -1, 1));
-        bullets.add(new Bullet(x, y, -1, -1));
+        bullets.add(pool.getBullets(x, y, 1, 0));
+        bullets.add(pool.getBullets(x, y, 0, 1));
+        bullets.add(pool.getBullets(x, y, -1, 0));
+        bullets.add(pool.getBullets(x, y, 0, -1));
+        bullets.add(pool.getBullets(x, y, 1, 1));
+        bullets.add(pool.getBullets(x, y, 1, -1));
+        bullets.add(pool.getBullets(x, y, -1, 1));
+        bullets.add(pool.getBullets(x, y, -1, -1));
+
+
     }
 }
